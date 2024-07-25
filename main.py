@@ -43,3 +43,25 @@ y_pred = knn.predict(X_test)
 print("Accuracy: ", accuracy_score(y_test, y_pred))
 print("Precision: ", precision_score(y_test, y_pred))
 print("Recall: ", recall_score(y_test, y_pred)) 
+
+# visualisation w/ PCA
+
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+
+clf = KNeighborsClassifier(n_neighbors=3)
+clf.fit(X_pca, y)
+
+h = .02
+x_min, x_max = X_pca[:, 0].min() - 1, X_pca[:, 0].max() + 1
+y_min, y_max = X_pca[:, 1].min() - 1, X_pca[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+
+Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+plt.contourf(xx, yy, Z, alpha=0.8, cmap=plt.cm.Paired)
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, edgecolors='k', cmap=plt.cm.Paired)
+plt.xlabel("PCA 1")
+plt.ylabel("PCA 2")
+plt.show()
