@@ -34,7 +34,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # model
 
-knn = KNeighborsClassifier(n_neighbors=3)
+knn = KNeighborsClassifier(n_neighbors=2)
 
 knn.fit(X_train, y_train)
 
@@ -64,4 +64,28 @@ plt.contourf(xx, yy, Z, alpha=0.8, cmap=plt.cm.Paired)
 plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, edgecolors='k', cmap=plt.cm.Paired)
 plt.xlabel("PCA 1")
 plt.ylabel("PCA 2")
+plt.show()
+
+# optimal k value
+
+vals = np.arange(1, 21)
+accuracy_scores = []
+precision_scores = []
+recall_scores = []
+
+for i in vals:
+    knn = KNeighborsClassifier(n_neighbors=i)
+    knn.fit(X_train, y_train)
+    y_pred = knn.predict(X_test)
+
+    accuracy_scores.append(accuracy_score(y_test, y_pred))
+    precision_scores.append(precision_score(y_test, y_pred))
+    recall_scores.append(recall_score(y_test, y_pred))
+
+plt.plot(vals, accuracy_scores, label="Accuracy")
+plt.plot(vals, precision_scores, label="Precision")
+plt.plot(vals, recall_scores, label="Recall")
+plt.xlabel("Number of neighbours")
+plt.ylabel("Accuracy")
+plt.legend()
 plt.show()
